@@ -6,6 +6,10 @@
   display: flex;
 }
 
+.logoImg {
+  border-radius: 50%;
+}
+
 .leftContainer {
   flex: 2;
 
@@ -49,4 +53,18 @@
 }
 .suggestionsContainer:hover {
   background-color: lightgray;
+}
+
+.rightContainer {
+  padding: 5%;
+  height: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.up {
+  flex: 1;
+}
+.down {
+  flex: 3;
 }

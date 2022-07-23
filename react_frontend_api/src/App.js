@@ -1,8 +1,9 @@
 import "./app.css";
+
+import History from "./components/History";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SuggestionList from "./components/SuggestionList";
-import logo from "./images/at.jpg";
 
 function App() {
   //? Default api route
@@ -19,6 +20,7 @@ function App() {
   const fetchPersons = async (textIn) => {
     try {
       const response = await axios.get(defPath + `?query=${textIn}`);
+
       response.status === 200 && setPersons(response.data);
     } catch (e) {
       console.log(e);
@@ -27,8 +29,8 @@ function App() {
 
   //? Import the persons data
   useEffect(() => {
-    if (inputText === "") {
-      return;
+    if (inputText.length === 0) {
+      setPersons([]);
     } else {
       fetchPersons(inputText);
     }
@@ -37,10 +39,11 @@ function App() {
   //? On change handler for the input field
   const onChangeHandler = (userTextInput) => {
     let matches = [];
-
     if (userTextInput.length > 0) {
       matches = persons.filter((person) => {
-        return person.phoneNumber.includes(userTextInput);
+        const regex = new RegExp(`^[\s-]?${userTextInput}`, "gi");
+
+        return person.phoneNumber.match(regex);
       });
     }
 
@@ -52,14 +55,14 @@ function App() {
     <div className="App">
       <div className="leftContainer">
         <div className="titleContainer">
-          <img src={logo} alt="" className="logoImg" />
-          <h3>Atlantbh zadatak</h3>
-          <h4>Zoran Janjic</h4>
+          <h3>Atlantbh</h3>
+          <h4>Autocomplete search</h4>
         </div>
         <div className="inputContainer">
           <input
             type="text"
             value={inputText}
+            placeholder="Unesite broj..."
             onChange={(e) => onChangeHandler(e.target.value)}
             onBlur={() => {
               setTimeout(() => {
@@ -68,21 +71,19 @@ function App() {
             }}
           />
 
-          {suggestion.length > 0 ? (
+          {suggestion.length > 0 && (
             <SuggestionList
               suggestion={suggestion}
               setSuggestions={setSuggestions}
               setInputText={setInputText}
             />
-          ) : (
-            <div>
-              <h3 className="noSuggestions">No suggestions :(</h3>
-            </div>
           )}
         </div>
       </div>
 
-      <div className="rightContainer">some output</div>
+      <div className="rightContainer">
+        <History />
+      </div>
     </div>
   );
 }
